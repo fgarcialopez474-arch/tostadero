@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Tostadero · tienda online de cafe de especialidad
 
-## Getting Started
+Tienda online ficticia (ejercicio del Master Desarrollo Agentico, The Power): cafe en grano, cafeteras, molinillos y
+accesorios, con marca propia **Tostadero**. Se construye paso a paso; la especificacion esta en
+[`docs/ESPECIFICACION.md`](docs/ESPECIFICACION.md).
 
-First, run the development server:
+## Estado
+
+| Sesion | Contenido | Estado |
+|---|---|---|
+| S1 | Proyecto Next.js, Neon, Prisma (schema y migracion), seed, Stripe en modo test | Hecha |
+| S2 | UI con shadcn, catalogo con busqueda y filtros, ficha de producto, carrito | Pendiente |
+| S3 | Checkout con Stripe, webhook, email de confirmacion | Pendiente |
+| S4 | Panel de admin, tests, CI y despliegue en Vercel | Pendiente |
+
+## Stack
+
+| Capa | Tecnologia |
+|---|---|
+| Framework | Next.js 15 (App Router) + TypeScript + Tailwind CSS |
+| Base de datos | PostgreSQL en Neon + Prisma 7 (driver adapter pg) |
+| Pagos | Stripe en modo test |
+| Proximamente | shadcn/ui, Zustand, Resend, Vitest, GitHub Actions, Vercel |
+
+## Ejecutarlo en local
+
+Necesitas Node.js 20+, una base PostgreSQL (Neon free tier o `docker compose up -d`) y una cuenta de Stripe en modo test.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install                 # dependencias + cliente de Prisma (postinstall)
+cp .env.example .env        # y rellena los valores
+npm run db:check            # comprueba que la base responde
+npx prisma migrate deploy   # crea las tablas
+npm run seed                # 4 categorias y 12 productos
+npm run stripe:check        # comprueba las claves de Stripe (sin cobrar nada)
+npm run dev                 # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+`npx prisma studio` abre un visor de las tablas en http://localhost:5555.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Estructura
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+docs/ESPECIFICACION.md   paginas, modelo de datos, catalogo y reglas
+src/app/                 paginas (App Router): cada carpeta es una ruta
+src/lib/prisma.ts        unica instancia de Prisma (conexion con pooler)
+src/lib/stripe.ts        instancia de Stripe solo de servidor (server-only)
+prisma/schema.prisma     modelos: Categoria, Producto, Pedido, LineaPedido
+prisma/migrations/       SQL generado por Prisma, versionado en git
+prisma/seed.ts           datos de ejemplo (idempotente)
+public/productos/        imagenes SVG de los productos
+scripts/                 comprobaciones de base de datos y Stripe
+docker-compose.yml       alternativa local a Neon
+```
 
-## Learn More
+## Reglas
 
-To learn more about Next.js, take a look at the following resources:
+1. Precios en **centimos** (enteros).
+2. Secretos solo en `.env` (ignorado por git); la clave secreta de Stripe nunca llega al navegador.
+3. El pedido se marca como PAGADO en el **webhook** de Stripe, no en la pagina de exito.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Material de clase: tienda y marcas ficticias, pagos en modo test.
