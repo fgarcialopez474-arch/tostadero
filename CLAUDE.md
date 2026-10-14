@@ -25,3 +25,6 @@ Tienda online "Tostadero" de cafe de especialidad (ficticia, ejercicio del Maste
 
 ## Comandos
 - `npm run dev` arranca en http://localhost:3000
+- `npx prisma migrate dev` aplica cambios del schema; `npx prisma studio` abre el visor de tablas
+- `npm run seed` rellena la base de datos con productos de ejemplo
+- `npm run db:check` y `npm run stripe:check` comprueban la conexion con Neon y Stripe
