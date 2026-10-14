@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Cabecera } from "@/components/cabecera";
+import { HidratarCarrito } from "@/components/hidratar-carrito";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
@@ -33,6 +34,7 @@ export default function RootLayout({
         <Cabecera />
         {children}
         <Toaster position="bottom-right" />
+        <HidratarCarrito />
       </body>
     </html>
   );

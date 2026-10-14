@@ -1,8 +1,17 @@
 // Estado global del carrito con Zustand: un store = estado + acciones, sin Provider ni Context.
 // Cualquier componente de cliente lo usa con useCarrito(...) y solo se repinta si cambia lo que lee.
+// Con persist, el carrito se guarda en localStorage y sobrevive a recargas y a cerrar el navegador.
 import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
 
-export type LineaCarrito = { id: number; nombre: string; precio: number; imagen: string; cantidad: number; stock: number };
+export type LineaCarrito = {
+  id: number;
+  nombre: string;
+  precio: number;
+  imagen: string;
+  cantidad: number;
+  stock: number;
+};
 
 type EstadoCarrito = {
   lineas: LineaCarrito[];
@@ -12,34 +21,47 @@ type EstadoCarrito = {
   vaciar: () => void;
 };
 
-export const useCarrito = create<EstadoCarrito>()((set) => ({
-  lineas: [],
+export const useCarrito = create<EstadoCarrito>()(
+  persist(
+    (set) => ({
+      lineas: [],
 
-  anadir: (producto, cantidad = 1) =>
-    set((estado) => {
-      const existente = estado.lineas.find((l) => l.id === producto.id);
-      if (existente) {
-        // ya estaba: sumamos, sin pasar del stock
-        return {
-          lineas: estado.lineas.map((l) =>
-            l.id === producto.id ? { ...l, cantidad: Math.min(l.cantidad + cantidad, l.stock) } : l
-          ),
-        };
-      }
-      return { lineas: [...estado.lineas, { ...producto, cantidad: Math.min(cantidad, producto.stock) }] };
+      anadir: (producto, cantidad = 1) =>
+        set((estado) => {
+          const existente = estado.lineas.find((l) => l.id === producto.id);
+          if (existente) {
+            // ya estaba: sumamos, sin pasar del stock
+            return {
+              lineas: estado.lineas.map((l) =>
+                l.id === producto.id ? { ...l, cantidad: Math.min(l.cantidad + cantidad, l.stock) } : l,
+              ),
+            };
+          }
+          return { lineas: [...estado.lineas, { ...producto, cantidad: Math.min(cantidad, producto.stock) }] };
+        }),
+
+      cambiarCantidad: (id, cantidad) =>
+        set((estado) => ({
+          lineas: estado.lineas
+            .map((l) => (l.id === id ? { ...l, cantidad: Math.min(cantidad, l.stock) } : l))
+            .filter((l) => l.cantidad > 0), // cantidad 0 = quitar
+        })),
+
+      quitar: (id) => set((estado) => ({ lineas: estado.lineas.filter((l) => l.id !== id) })),
+
+      vaciar: () => set({ lineas: [] }),
     }),
-
-  cambiarCantidad: (id, cantidad) =>
-    set((estado) => ({
-      lineas: estado.lineas
-        .map((l) => (l.id === id ? { ...l, cantidad: Math.min(cantidad, l.stock) } : l))
-        .filter((l) => l.cantidad > 0), // cantidad 0 = quitar
-    })),
-
-  quitar: (id) => set((estado) => ({ lineas: estado.lineas.filter((l) => l.id !== id) })),
-
-  vaciar: () => set({ lineas: [] }),
-}));
+    {
+      name: "carrito-tostadero", // la clave en localStorage
+      storage: createJSONStorage(() => localStorage),
+      partialize: (estado) => ({ lineas: estado.lineas }), // solo los datos, no las funciones
+      // El servidor no tiene localStorage y pinta el carrito vacio. Si el navegador leyera el carrito guardado
+      // antes de hidratar, su primer pintado no coincidiria con el HTML del servidor (error de hidratacion).
+      // Por eso no se lee al crear el store: lo hace <HidratarCarrito /> justo despues de hidratar.
+      skipHydration: true,
+    },
+  ),
+);
 
 // Valores derivados: se calculan, no se guardan (asi nunca se desincronizan)
 export const contarArticulos = (lineas: LineaCarrito[]) => lineas.reduce((n, l) => n + l.cantidad, 0);
