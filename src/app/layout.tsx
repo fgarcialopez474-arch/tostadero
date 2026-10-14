@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Cabecera } from "@/components/cabecera";
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
 // shadcn usa la variable --font-sans: le damos la fuente Geist
@@ -31,6 +32,7 @@ export default function RootLayout({
       <body className="antialiased">
         <Cabecera />
         {children}
+        <Toaster position="bottom-right" />
       </body>
     </html>
   );
