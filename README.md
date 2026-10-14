@@ -8,7 +8,7 @@ accesorios, con marca propia **Tostadero**. Se construye paso a paso; la especif
 
 | Sesion | Contenido | Estado |
 |---|---|---|
-| S1 | Proyecto Next.js, Neon, Prisma (schema y migracion), seed, Stripe en modo test | Hecha |
+| S1 | Proyecto Next.js, Neon, Prisma (schema, migraciones y modelo Marca), seed, Stripe en modo test | Hecha |
 | S2 | UI con shadcn, catalogo con busqueda y filtros, ficha de producto, carrito | Pendiente |
 | S3 | Checkout con Stripe, webhook, email de confirmacion | Pendiente |
 | S4 | Panel de admin, tests, CI y despliegue en Vercel | Pendiente |
@@ -45,7 +45,7 @@ docs/ESPECIFICACION.md   paginas, modelo de datos, catalogo y reglas
 src/app/                 paginas (App Router): cada carpeta es una ruta
 src/lib/prisma.ts        unica instancia de Prisma (conexion con pooler)
 src/lib/stripe.ts        instancia de Stripe solo de servidor (server-only)
-prisma/schema.prisma     modelos: Categoria, Producto, Pedido, LineaPedido
+prisma/schema.prisma     modelos: Categoria, Marca, Producto, Pedido, LineaPedido
 prisma/migrations/       SQL generado por Prisma, versionado en git
 prisma/seed.ts           datos de ejemplo (idempotente)
 public/productos/        imagenes SVG de los productos

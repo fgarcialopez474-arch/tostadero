@@ -18,6 +18,14 @@ model Categoria {
   productos Producto[]
 }
 
+// Una marca tiene muchos productos (relacion 1 a N). Tostadero es la marca propia.
+model Marca {
+  id        Int        @id @default(autoincrement())
+  nombre    String     @unique
+  slug      String     @unique // para filtrar por URL: /?marca=tostadero
+  productos Producto[]
+}
+
 model Producto {
   id          Int      @id @default(autoincrement())
   nombre      String
@@ -30,9 +38,12 @@ model Producto {
 
   categoria   Categoria     @relation(fields: [categoriaId], references: [id])
   categoriaId Int
+  marca       Marca         @relation(fields: [marcaId], references: [id])
+  marcaId     Int
   lineas      LineaPedido[]
 
   @@index([categoriaId])
+  @@index([marcaId])
 }
 
 enum EstadoPedido {
