@@ -14,7 +14,7 @@ El administrador ve los pedidos y cambia su estado (pagado -> enviado -> entrega
 
 | Ruta | Pagina | Quien la usa | Sesion |
 |---|---|---|---|
-| `/` | Catalogo: rejilla de productos, busqueda por nombre y filtros (categoria, precio) | Cliente | S2 |
+| `/` | Catalogo: rejilla de productos, busqueda por nombre (sin distinguir tildes) y filtros (categoria, marca, precio); anadir y quitar del carrito desde cada tarjeta | Cliente | S2 |
 | `/producto/[id]` | Detalle: imagen, marca, precio, stock, cantidad, anadir al carrito (404 si no existe) | Cliente | S2 |
 | `/carrito` | Carrito: lineas, cantidades, total, boton de pagar | Cliente | S2 |
 | `/checkout/exito` y `/checkout/cancelado` | Vuelta desde Stripe (solo informan, no cambian nada) | Cliente | S3 |
@@ -32,7 +32,7 @@ El administrador ve los pedidos y cambia su estado (pagado -> enviado -> entrega
 |---|---|
 | Categoria | id, nombre (unico), slug (unico) |
 | Marca | id, nombre (unico), slug (unico) |
-| Producto | id, nombre, slug (unico), descripcion, precio (centimos), imagen, stock, creadoEn, categoriaId, marcaId |
+| Producto | id, nombre, slug (unico), descripcion, precio (centimos), precioAnterior (centimos, solo en ofertas), imagen, stock, creadoEn, categoriaId, marcaId |
 | Pedido | id, email, estado, total (centimos), stripeSessionId (unico, opcional), creadoEn, actualizadoEn |
 | LineaPedido | id, cantidad, precioUnitario (centimos, copiado al comprar), pedidoId, productoId |
 
@@ -48,7 +48,7 @@ El administrador ve los pedidos y cambia su estado (pagado -> enviado -> entrega
 | Cafeteras | Cafetera italiana Moka 6 tazas | Bruma Kitchen | 29,90 € | 15 |
 | Cafeteras | Prensa francesa 1 L | Bruma Kitchen | 24,50 € | 20 |
 | Cafeteras | Dripper V60 ceramico | Bruma Kitchen | 19,90 € | **0** (agotado, para probar ese caso) |
-| Molinillos | Molinillo manual Fresa Pro | Molienda & Co | 59,00 € | 12 |
+| Molinillos | Molinillo manual Fresa Pro | Molienda & Co | **47,20 €** (oferta −20 %, antes 59,00 €) | 12 |
 | Molinillos | Molinillo electrico Muela 40 | Molienda & Co | 129,00 € | 6 |
 | Molinillos | Molinillo de viaje Mini | Molienda & Co | 34,90 € | 18 |
 | Accesorios | Bascula con temporizador | Bruma Kitchen | 27,90 € | 25 |

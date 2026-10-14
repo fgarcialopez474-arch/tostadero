@@ -15,8 +15,10 @@ Tienda y marcas ficticias: café en grano, cafeteras, molinillos y accesorios, c
 
 ## Qué hace
 
-- **Catálogo** con búsqueda por nombre y filtros por **categoría, marca y precio**, resueltos en el servidor a partir
-  de la URL (cualquier búsqueda se puede compartir).
+- **Catálogo** con búsqueda por nombre **sin distinguir tildes** ("etiopia" encuentra "Etiopía") y filtros por
+  **categoría, marca y precio**, resueltos en el servidor a partir de la URL (cualquier búsqueda se puede compartir).
+- **Añadir y quitar del carrito desde el catálogo**, sin entrar en cada producto.
+- **Ofertas**: precio anterior tachado y porcentaje de descuento; Stripe cobra el precio rebajado.
 - **Ficha de producto** con ruta dinámica, stock, "agotado" y página 404.
 - **Carrito** con Zustand que sobrevive a recargar y a cerrar el navegador (localStorage), sin errores de hidratación.
 - **Checkout** con Stripe desde una Server Action: del navegador solo llegan ids y cantidades; precios y stock se releen
@@ -88,6 +90,8 @@ El flujo de un pago:
    de hidratar (`skipHydration`), y la página de éxito espera a esa carga antes de vaciarlo.
 7. **Secretos solo en el servidor.** `server-only` en `lib/stripe.ts` y `lib/email.ts`: si un componente de cliente los
    importa, el build falla. Solo la clave publicable de Stripe lleva `NEXT_PUBLIC_`.
+8. **Búsqueda sin tildes con SQL parametrizado.** La extensión `unaccent` de PostgreSQL compara sin tildes; como Prisma
+   no tiene ese filtro, la consulta va con `$queryRaw` en plantilla: el texto viaja como parámetro, nunca pegado en el SQL.
 
 ## Ejecutarlo en local
 

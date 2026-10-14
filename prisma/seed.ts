@@ -23,7 +23,7 @@ const MARCAS = [
   { nombre: "Bruma Kitchen", slug: "bruma-kitchen" },
 ];
 
-// precio en CENTIMOS
+// precio en CENTIMOS (lo que se cobra). precioAnterior: solo en ofertas, se pinta tachado
 const PRODUCTOS = [
   { cat: "cafe-en-grano", marca: "tostadero", nombre: "Etiopía Yirgacheffe 250 g", slug: "etiopia-yirgacheffe-250g", precio: 1490, stock: 40,
     descripcion: "Lavado, tueste claro. Notas de bergamota, jazmín y limón. Ideal para filtro. Marca propia Tostadero." },
@@ -37,7 +37,7 @@ const PRODUCTOS = [
     descripcion: "Jarra de vidrio borosilicato con filtro de acero de doble malla. Molienda gruesa y 4 minutos de infusión." },
   { cat: "cafeteras", marca: "bruma-kitchen", nombre: "Dripper V60 cerámico", slug: "dripper-v60-ceramico", precio: 1990, stock: 0,
     descripcion: "Cono de cerámica para 1 a 4 tazas, con estrías en espiral. Agotado: vuelve el mes que viene." },
-  { cat: "molinillos", marca: "molienda-co", nombre: "Molinillo manual Fresa Pro", slug: "molinillo-manual-fresa-pro", precio: 5900, stock: 12,
+  { cat: "molinillos", marca: "molienda-co", nombre: "Molinillo manual Fresa Pro", slug: "molinillo-manual-fresa-pro", precio: 4720, precioAnterior: 5900, stock: 12,
     descripcion: "Muelas cónicas de acero inoxidable, 30 ajustes de molienda, de espresso a prensa francesa." },
   { cat: "molinillos", marca: "molienda-co", nombre: "Molinillo eléctrico Muela 40", slug: "molinillo-electrico-muela-40", precio: 12900, stock: 6,
     descripcion: "Muelas planas de 40 mm, 40 posiciones y temporizador. Poca retención y molienda uniforme." },
@@ -69,6 +69,7 @@ async function main() {
             slug: p.slug,
             descripcion: p.descripcion,
             precio: p.precio,
+            precioAnterior: "precioAnterior" in p ? p.precioAnterior : null,
             stock: p.stock,
             imagen: `/productos/${p.slug}.svg`,
             marca: { connect: { slug: p.marca } },

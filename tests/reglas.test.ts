@@ -1,8 +1,8 @@
 // Tests de las reglas de negocio que no necesitan base de datos ni Stripe.
 import { describe, expect, it, vi } from "vitest";
-import { leerFiltros } from "@/lib/catalogo";
+import { leerFiltros, patronBusqueda } from "@/lib/catalogo";
 import { puedeCambiar } from "@/lib/estados";
-import { formatearPrecio } from "@/lib/formato";
+import { formatearPrecio, porcentajeDescuento } from "@/lib/formato";
 import { calcularTotal, contarArticulos, type LineaCarrito } from "@/store/carrito";
 
 // catalogo.ts importa la instancia de Prisma; aqui no queremos conectar a ninguna base de datos
@@ -56,5 +56,24 @@ describe("filtros del catalogo (la URL la puede escribir cualquiera)", () => {
   });
   it("si un parametro llega repetido, usa el primero", () => {
     expect(leerFiltros({ categoria: ["cafeteras", "molinillos"] }).categoria).toBe("cafeteras");
+  });
+});
+
+describe("busqueda", () => {
+  it("rodea el texto de comodines para ILIKE", () => {
+    expect(patronBusqueda("etiopia")).toBe("%etiopia%");
+  });
+  it("escapa los % y _ del usuario: buscar '50%' no es un comodin", () => {
+    expect(patronBusqueda("50%_x")).toBe("%50\\%\\_x%");
+  });
+});
+
+describe("ofertas", () => {
+  it("el Fresa Pro de 59,00 a 47,20 es un -20 %", () => {
+    expect(porcentajeDescuento(4720, 5900)).toBe(20);
+  });
+  it("sin precio anterior, o si no es mas caro, no hay oferta", () => {
+    expect(porcentajeDescuento(4720, null)).toBeNull();
+    expect(porcentajeDescuento(5900, 5900)).toBeNull();
   });
 });

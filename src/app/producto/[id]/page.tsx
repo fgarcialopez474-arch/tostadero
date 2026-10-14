@@ -5,8 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ComprarProducto } from "@/components/comprar-producto";
+import { EtiquetaOferta, Precio } from "@/components/precio";
 import { Badge } from "@/components/ui/badge";
-import { formatearPrecio } from "@/lib/formato";
 import { prisma } from "@/lib/prisma";
 
 // En Next 15 params es una Promise
@@ -51,9 +51,10 @@ export default async function PaginaProducto({ params }: Props) {
             <Link href={`/?marca=${producto.marca.slug}`}>
               <Badge variant="outline">{producto.marca.nombre}</Badge>
             </Link>
+            <EtiquetaOferta precio={producto.precio} precioAnterior={producto.precioAnterior} />
           </div>
           <h1 className="text-3xl font-bold tracking-tight">{producto.nombre}</h1>
-          <p className="text-3xl font-semibold">{formatearPrecio(producto.precio)}</p>
+          <Precio precio={producto.precio} precioAnterior={producto.precioAnterior} grande />
           <p className="leading-relaxed text-muted-foreground">{producto.descripcion}</p>
           <p className={`text-sm ${agotado ? "text-destructive" : "text-emerald-700"}`}>
             {agotado ? "Agotado" : `En stock: ${producto.stock} unidades`}
