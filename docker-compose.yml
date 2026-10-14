@@ -1,0 +1,25 @@
+# ALTERNATIVA LOCAL a Neon: PostgreSQL en Docker para desarrollo.
+# Si tienes Docker:  docker compose up -d   (y docker compose down para pararlo)
+# y en el .env pon:
+#   DATABASE_URL="postgresql://tostadero:tostadero@localhost:5432/tostadero"
+#   DIRECT_URL="postgresql://tostadero:tostadero@localhost:5432/tostadero"
+services:
+  db:
+    image: postgres:17-alpine          # imagen oficial de PostgreSQL, version ligera (alpine)
+    container_name: tostadero-db       # nombre del contenedor para verlo en "docker ps"
+    restart: unless-stopped            # se vuelve a levantar solo si se cae o reinicias Docker
+    environment:                       # variables que lee la imagen al crear la base la primera vez
+      POSTGRES_USER: tostadero         # usuario de la base de datos
+      POSTGRES_PASSWORD: tostadero     # contrasena SOLO para desarrollo local, nunca en produccion
+      POSTGRES_DB: tostadero           # base de datos que se crea al arrancar
+    ports:
+      - "5432:5432"                    # puerto de tu ordenador : puerto dentro del contenedor
+    volumes:
+      - datos_pg:/var/lib/postgresql/data   # los datos se guardan fuera del contenedor y sobreviven a reinicios
+    healthcheck:                       # Docker comprueba cada 5 s que Postgres acepta conexiones
+      test: ["CMD-SHELL", "pg_isready -U tostadero -d tostadero"]
+      interval: 5s
+      retries: 5
+
+volumes:
+  datos_pg:                            # volumen con nombre, gestionado por Docker
