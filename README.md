@@ -22,7 +22,8 @@ accesorios, con marca propia **Tostadero**. Se construye paso a paso; la especif
 | Pagos | Stripe en modo test |
 | UI y carrito | shadcn/ui (Base UI) + Zustand con persist (localStorage) |
 | Emails | Resend (enviados desde el webhook) |
-| Proximamente | Vitest, GitHub Actions, Vercel |
+| Calidad | ESLint, TypeScript estricto, Vitest, GitHub Actions (lint + tipos + tests + build) |
+| Proximamente | Vercel |
 
 ## Ejecutarlo en local
 
@@ -35,6 +36,7 @@ npm run db:check            # comprueba que la base responde
 npx prisma migrate deploy   # crea las tablas
 npm run seed                # 4 categorias y 12 productos
 npm run stripe:check        # comprueba las claves de Stripe (sin cobrar nada)
+npm test                    # tests de reglas de negocio (Vitest)
 npm run dev                 # http://localhost:3000
 ```
 
