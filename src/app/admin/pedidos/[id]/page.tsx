@@ -1,8 +1,10 @@
-// Detalle de un pedido en el panel de admin. (Los botones para cambiar de estado llegan en el paso 2.)
+// Detalle de un pedido en el panel de admin, con los cambios de estado permitidos.
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BadgeEstado } from "@/components/badge-estado";
+import { CambiarEstado } from "@/components/cambiar-estado";
+import { TRANSICIONES_ADMIN } from "@/lib/estados";
 import { formatearPrecio } from "@/lib/formato";
 import { prisma } from "@/lib/prisma";
 
@@ -59,6 +61,8 @@ export default async function DetallePedido({ params }: Props) {
           <span>{formatearPrecio(pedido.total)}</span>
         </p>
       </div>
+      {/* Solo se ofrecen los cambios posibles desde el estado actual; la accion lo vuelve a comprobar */}
+      <CambiarEstado pedidoId={pedido.id} posibles={TRANSICIONES_ADMIN[pedido.estado]} />
     </main>
   );
 }
