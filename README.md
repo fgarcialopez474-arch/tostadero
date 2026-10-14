@@ -10,7 +10,7 @@ accesorios, con marca propia **Tostadero**. Se construye paso a paso; la especif
 |---|---|---|
 | S1 | Proyecto Next.js, Neon, Prisma (schema, migraciones y modelo Marca), seed, Stripe en modo test | Hecha |
 | S2 | UI con shadcn, catalogo con busqueda y filtros (categoria, marca, precio), ficha de producto, carrito persistente | Hecha |
-| S3 | Checkout con Stripe, webhook, email de confirmacion | Pendiente |
+| S3 | Checkout con Stripe (Server Action), webhook firmado e idempotente, email con Resend, paginas de exito y cancelado | Hecha |
 | S4 | Panel de admin, tests, CI y despliegue en Vercel | Pendiente |
 
 ## Stack
@@ -21,7 +21,8 @@ accesorios, con marca propia **Tostadero**. Se construye paso a paso; la especif
 | Base de datos | PostgreSQL en Neon + Prisma 7 (driver adapter pg) |
 | Pagos | Stripe en modo test |
 | UI y carrito | shadcn/ui (Base UI) + Zustand con persist (localStorage) |
-| Proximamente | Resend, Vitest, GitHub Actions, Vercel |
+| Emails | Resend (enviados desde el webhook) |
+| Proximamente | Vitest, GitHub Actions, Vercel |
 
 ## Ejecutarlo en local
 
