@@ -13,6 +13,22 @@ confirmado por **webhook**, email de confirmación y panel de administración. D
 Proyecto Ecommerce del Master Desarrollo Agéntico (The Power), construido paso a paso en 4 sesiones.
 Tienda y marcas ficticias: café en grano, cafeteras, molinillos y accesorios, con marca propia **Tostadero**.
 
+## Requisitos del proyecto
+
+| Requisito | Cómo se cumple | Dónde |
+|---|---|---|
+| Modelo de datos | Categoría, Marca, Producto, Pedido y LineaPedido con relaciones 1-N; estados del pedido en un enum; precios en céntimos y precio unitario copiado al comprar. 3 migraciones | `prisma/schema.prisma`, `prisma/migrations/` |
+| Catálogo con búsqueda y filtros | Búsqueda por nombre sin tildes y filtros por categoría, marca y precio, resueltos en el servidor desde la URL | `src/app/page.tsx`, `src/lib/catalogo.ts`, `src/components/filtros.tsx` |
+| Carrito persistente | Zustand con persist en localStorage: sobrevive a recargar y a cerrar el navegador | `src/store/carrito.ts`, `src/components/hidratar-carrito.tsx` |
+| Checkout con Stripe | Server Action que relee precios y stock, crea el pedido PENDIENTE y redirige a Stripe Checkout en modo test | `src/app/checkout/actions.ts` |
+| Webhook de confirmación | `checkout.session.completed` con firma verificada: pasa el pedido a PAGADO y descuenta stock en una transacción idempotente | `src/app/api/webhooks/stripe/route.ts` |
+| Emails con Resend | El webhook envía la confirmación con el resumen del pedido (*) | `src/lib/email.ts` |
+| Panel de administrador | `/admin` protegido con contraseña: pedidos por estado, detalle y cambio de estado (pagado → enviado → entregado) | `src/app/admin/`, `src/middleware.ts`, `src/lib/estados.ts` |
+| Aplicación desplegada | Vercel, con deploy automático y CI en cada push a `main` | https://tostadero.vercel.app |
+
+(*) Sin dominio propio verificado, Resend solo envía a la dirección de la cuenta: el email de confirmación llega ahí, no
+al email que se escribe en Stripe. La contraseña del panel de admin no está en el repositorio: se entrega aparte.
+
 ## Qué hace
 
 - **Catálogo** con búsqueda por nombre **sin distinguir tildes** ("etiopia" encuentra "Etiopía") y filtros por
